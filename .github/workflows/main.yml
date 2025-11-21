@@ -12,16 +12,15 @@ steps:
 - uses: actions/checkout@v4
 
 ```
-  # Install NVM, Node 18, and PM2
   - name: Setup Node.js and PM2 via NVM
     run: |
-      # Clean old NVM to avoid git errors
+      # Remove old NVM to avoid git errors
       rm -rf $HOME/.nvm
 
-      # Install latest stable NVM
+      # Install latest NVM
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
 
-      # Load NVM into shell
+      # Load NVM into the shell
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
@@ -43,7 +42,7 @@ steps:
       npm install
       npm run build
 
-      # Restart PM2 process
+      # Restart PM2 process (start if not already running)
       pm2 restart api || pm2 start npm --name "api" -- run start
 ```
 
