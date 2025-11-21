@@ -14,35 +14,20 @@ steps:
 ```
   - name: Setup Node.js and PM2 via NVM
     run: |
-      # Remove old NVM to avoid git errors
       rm -rf $HOME/.nvm
-
-      # Install latest NVM
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
-
-      # Load NVM into the shell
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-      # Install and use Node 18
       nvm install 18
       nvm use 18
       node -v
       npm -v
-
-      # Install PM2 globally
       npm install -g pm2
-
-      # Ensure deployment directory exists
       mkdir -p $HOME/CICD
       cd $HOME/CICD
-
-      # Pull latest code and build
       git pull origin main
       npm install
       npm run build
-
-      # Restart PM2 process (start if not already running)
       pm2 restart api || pm2 start npm --name "api" -- run start
 ```
 
