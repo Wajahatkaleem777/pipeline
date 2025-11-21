@@ -1,38 +1,49 @@
 name: CICD
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+- main
 
 jobs:
-  build:
-    runs-on: self-hosted   # runs inside your VM
-    strategy:
-      matrix:
-        node-version: [14.x]
+build:
+runs-on: self-hosted
+steps:
+- uses: actions/checkout@v4
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install and build
-        run: |
-          npm install
-          npm run build
-        env:
-          CI: true
+```
+  # Install NVM, Node 18, and PM2
+  - name: Setup Node.js and PM2 via NVM
+    run: |
+      # Clean old NVM to avoid git errors
+      rm -rf $HOME/.nvm
 
-      - name: Deploy app
-        run: |
-          curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-          . ~/.nvm/nvm.sh
-          nvm install 14
-          npm install -g pm2
-          cd ~/CICD
-          git pull origin main
-          npm install
-          npm run build
-          pm2 restart api
+      # Install latest stable NVM
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
+
+      # Load NVM into shell
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+      # Install and use Node 18
+      nvm install 18
+      nvm use 18
+      node -v
+      npm -v
+
+      # Install PM2 globally
+      npm install -g pm2
+
+      # Ensure deployment directory exists
+      mkdir -p $HOME/CICD
+      cd $HOME/CICD
+
+      # Pull latest code and build
+      git pull origin main
+      npm install
+      npm run build
+
+      # Restart PM2 process
+      pm2 restart api || pm2 start npm --name "api" -- run start
+```
+
