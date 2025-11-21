@@ -33,7 +33,8 @@ jobs:
           npm run build
 
           # --- Restart or start PM2 process ---
-          pm2 restart api || pm2 start npm --name "api" -- run start
+          pm2 delete api || true
+          pm2 start npm --name "api" -- run start
         shell: bash
 
 
