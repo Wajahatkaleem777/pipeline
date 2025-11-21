@@ -28,7 +28,7 @@ jobs:
           npm install -g pm2 # Install PM2 globally
 
           # --- Deployment Logic using $HOME/CICD (as requested) ---
-          DEPLOY_PATH="$HOME/CICD"
+          DEPLOY_PATH="$HOME/pipeline"
           mkdir -p $DEPLOY_PATH
           cd $DEPLOY_PATH
           
