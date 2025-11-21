@@ -11,8 +11,9 @@ runs-on: self-hosted
 steps:
 - uses: actions/checkout@v4
 
-- name: Setup Node.js and PM2 via NVM
-  run: |
+```
+  - name: Setup Node.js and PM2 via NVM
+    run: |
       rm -rf $HOME/.nvm
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
       export NVM_DIR="$HOME/.nvm"
@@ -28,6 +29,7 @@ steps:
       npm install
       npm run build
       pm2 restart api || pm2 start npm --name "api" -- run start
+```
 
 
 
